@@ -286,7 +286,7 @@
                 const change = ((p - pc) / pc) * 100;
                 
                 let sig = 'NEUTRAL';
-                let score = 50 + (change * 10);
+                            let score = Math.min(100, Math.max(0, 50 + (change * 10)));
                 if (change < -0.5) sig = 'BUY';
                 if (change > 0.5) sig = 'SELL';
                 
