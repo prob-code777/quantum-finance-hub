@@ -64,7 +64,6 @@
         .badge-buy { background: rgba(50, 215, 75, 0.15); color: #32D74B; border: 1px solid rgba(50, 215, 75, 0.2); }
         .badge-sell { background: rgba(255, 69, 58, 0.15); color: #FF453A; border: 1px solid rgba(255, 69, 58, 0.2); }
         .badge-neutral { background: rgba(255, 255, 255, 0.05); color: #86868b; border: 1px solid rgba(255, 255, 255, 0.1); }
-        
         .stat-card {
             padding: 28px;
             border-radius: 28px;
@@ -76,7 +75,6 @@
             background: rgba(255, 255, 255, 0.04);
             border-color: rgba(255, 255, 255, 0.15);
         }
-        
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -88,80 +86,84 @@
         }
     </style>
 </head>
-<body>
-    <div class="flex min-h-screen">
-        <!-- Sidebar -->
-        <aside class="w-24 flex flex-col items-center py-8 border-r border-white/5 bg-black/20 backdrop-blur-xl">
-            <div class="w-12 h-12 bg-blue-500 rounded-2xl flex items-center justify-center mb-12 shadow-lg shadow-blue-500/20">
-                <i data-lucide="zap" class="text-white w-6 h-6"></i>
-            </div>
-            <nav class="flex-1 space-y-4">
-                <div class="sidebar-item active"><i data-lucide="layout-grid" class="w-6 h-6"></i></div>
-                <div class="sidebar-item"><i data-lucide="bar-chart-3" class="w-6 h-6"></i></div>
-                <div class="sidebar-item"><i data-lucide="pie-chart" class="w-6 h-6"></i></div>
-                <div class="sidebar-item"><i data-lucide="settings" class="w-6 h-6"></i></div>
-            </nav>
-        </aside>
+<body class="p-10">
+    <div class="flex gap-10 max-w-[1600px] mx-auto h-full">
+        <!-- SIDEBAR -->
+        <div class="w-16 flex flex-col items-center">
+            <div class="w-10 h-10 rounded-2xl bg-blue-600 mb-10 flex items-center justify-center font-black text-white italic">Q</div>
+            <div class="sidebar-item active"><i data-lucide="layout-dashboard" class="w-6 h-6"></i></div>
+            <div class="sidebar-item"><i data-lucide="bar-chart-2" class="w-6 h-6"></i></div>
+            <div class="sidebar-item"><i data-lucide="activity" class="w-6 h-6"></i></div>
+            <div class="sidebar-item"><i data-lucide="database" class="w-6 h-6"></i></div>
+            <div class="mt-auto sidebar-item"><i data-lucide="settings" class="w-6 h-6"></i></div>
+        </div>
 
-        <!-- Main Content -->
-        <main class="flex-1 p-10 max-w-7xl mx-auto">
-            <!-- Header -->
-            <header class="flex items-center justify-between mb-12">
+        <!-- MAIN CONTENT -->
+        <div class="flex-1">
+            <!-- HEADER -->
+            <header class="flex justify-between items-start mb-14">
                 <div>
-                    <div class="flex items-center gap-3 mb-1">
-                        <h1 class="text-3xl font-black tracking-tighter text-white">QUANTUM HUB</h1>
-                        <span class="text-neutral-500 text-3xl font-light">| Premium Terminal</span>
-                    </div>
-                    <p class="text-neutral-500 font-bold uppercase tracking-[0.2em] text-[10px]">Institutional Quantitative Screener</p>
+                    <h1 class="text-2xl font-black tracking-tight text-white flex items-center gap-3">
+                        QUANTUM HUB <span class="text-neutral-500 font-medium">| Premium Terminal</span>
+                    </h1>
+                    <p class="text-[10px] font-black tracking-[0.3em] text-neutral-500 uppercase mt-2">Institutional Quantitative Screener</p>
                 </div>
-                
                 <div class="flex items-center gap-8">
                     <div class="text-right">
-                        <div id="live-clock" class="text-2xl font-black text-white font-mono tabular-nums">00:00:00</div>
-                        <div class="flex items-center justify-end gap-2 mt-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span class="text-[9px] font-black text-emerald-500 uppercase tracking-widest">System Online</span>
+                        <div id="live-clock" class="text-xl font-black text-white font-mono tracking-widest">00:00:00</div>
+                        <div class="flex items-center gap-2 justify-end mt-1">
+                            <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                            <span class="text-[10px] font-black tracking-widest text-emerald-500 uppercase">System Online</span>
                         </div>
                     </div>
-                    <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white/10 ring-4 ring-white/5">
+                    <div class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
                         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User">
                     </div>
                 </div>
             </header>
 
-            <!-- Stats Grid -->
-            <div class="grid grid-cols-4 gap-6 mb-12">
+            <!-- STATS -->
+            <div class="grid grid-cols-4 gap-6 mb-10">
                 <div class="stat-card">
-                    <p class="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-4">Buy Signals</p>
-                    <div id="stat-buy" class="text-4xl font-black text-white mb-2">--</div>
-                    <p class="text-[11px] text-emerald-500/80 font-bold">Momentum strategy active</p>
-                </div>
-                <div class="stat-card">
-                    <p class="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-4">Alerts</p>
-                    <div class="text-4xl font-black text-white mb-2">12</div>
-                    <p class="text-[11px] text-amber-500/80 font-bold">Overbought zones detected</p>
-                </div>
-                <div class="stat-card">
-                    <p class="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-4">Vol Score</p>
-                    <div class="text-4xl font-black text-white mb-2">64.2</div>
-                    <div class="w-full bg-white/5 h-1.5 rounded-full mt-4 overflow-hidden">
-                        <div class="bg-blue-500 h-full rounded-full" style="width: 64%"></div>
+                    <div class="text-neutral-500 text-[10px] font-bold uppercase tracking-widest mb-3 text-neutral-500">Buy Signals</div>
+                    <div id="stat-buy" class="text-3xl font-black text-white">--</div>
+                    <div class="mt-4 flex items-center gap-2">
+                        <div class="text-[10px] text-emerald-400 font-bold">Momentum strategy</div>
+                        <div class="text-[10px] text-neutral-600 font-bold uppercase">active</div>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <p class="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-4">DB Assets</p>
-                    <div class="text-4xl font-black text-white mb-2">34</div>
-                    <p class="text-[11px] text-neutral-500 font-bold">IT / US / DE Markets Unified</p>
+                    <div class="text-neutral-500 text-[10px] font-bold uppercase tracking-widest mb-3">Alerts</div>
+                    <div id="stat-alerts" class="text-3xl font-black text-white">12</div>
+                    <div class="mt-4">
+                        <div class="text-[10px] text-amber-500 font-bold">Overbought zones</div>
+                        <div class="text-[10px] text-neutral-600 font-bold uppercase mt-0.5">detected</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-neutral-500 text-[10px] font-bold uppercase tracking-widest mb-3">Vol Score</div>
+                    <div id="stat-vol" class="text-3xl font-black text-white">64.2</div>
+                    <div class="mt-5 w-full bg-white/5 h-1 rounded-full overflow-hidden">
+                        <div class="bg-blue-500 h-full w-[64%]"></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-neutral-500 text-[10px] font-bold uppercase tracking-widest mb-3">DB Assets</div>
+                    <div id="stat-assets" class="text-3xl font-black text-white">34</div>
+                    <div class="mt-4">
+                        <div class="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">IT / US / DE Markets</div>
+                        <div class="text-[10px] text-neutral-600 font-bold uppercase mt-0.5">Unified</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Terminal Section -->
-            <section class="liquid-glass overflow-hidden">
-                <div class="p-8 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
-                    <h2 class="text-xl font-black text-white">Market Intelligence</h2>
+            <!-- TABLE -->
+            <div class="liquid-glass overflow-hidden">
+                <div class="px-10 py-8 flex justify-between items-center border-b border-white/[0.05]">
+                    <h2 class="text-xl font-black text-white tracking-tight">Market Intelligence</h2>
                     <div class="flex gap-4">
                         <div class="relative">
-                            <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500"></i>
+                            <i data-lucide="search" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500"></i>
                             <input type="text" placeholder="Search Symbol/ISIN..." class="bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-2.5 text-sm text-neutral-300 outline-none w-72 focus:border-blue-500/50 transition-all">
                         </div>
                         <select class="bg-white/5 border border-white/10 rounded-xl px-6 py-2.5 text-sm text-neutral-300 outline-none focus:border-blue-500/50">
@@ -172,39 +174,65 @@
                         </select>
                     </div>
                 </div>
-
-                <table class="w-full border-collapse">
-                    <thead>
-                        <tr class="text-[10px] font-black text-neutral-500 uppercase border-b border-white/5">
-                            <th class="px-10 py-6 text-left tracking-widest">Asset Details</th>
-                            <th class="px-10 py-6 text-left tracking-widest">ISIN</th>
-                            <th class="px-10 py-6 text-right tracking-widest">Market Price</th>
-                            <th class="px-10 py-6 text-center tracking-widest">Quantum Signal</th>
-                            <th class="px-10 py-6 text-right tracking-widest">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="asset-table-body" class="divide-y divide-white/[0.03]">
-                        <!-- Dynamic content -->
-                    </tbody>
-                </table>
-            </section>
-        </main>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-[10px] text-neutral-500 font-bold uppercase tracking-[0.2em] border-b border-white/[0.05]">
+                                <th class="px-10 py-5">Asset Details</th>
+                                <th class="px-10 py-5">ISIN</th>
+                                <th class="px-10 py-5 text-right">Market Price</th>
+                                <th class="px-10 py-5 text-center">Quantum Signal</th>
+                                <th class="px-10 py-5 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="asset-table-body">
+                            <!-- JS RENDER -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Modal Analysis -->
+    <!-- MODAL -->
     <div id="analysis-modal" class="modal-overlay">
-        <div class="max-w-6xl mx-auto h-full flex flex-col">
-            <div class="flex items-center justify-between mb-6">
+        <div class="max-w-[1200px] mx-auto bg-[#0A0A0A] rounded-[40px] border border-white/10 h-[85vh] flex flex-col overflow-hidden">
+            <div class="px-10 py-8 border-b border-white/10 flex justify-between items-center">
                 <div>
-                    <h2 id="modal-name" class="text-3xl font-black text-white mb-1">ASSET ANALYSIS</h2>
-                    <p class="text-neutral-500 font-bold uppercase tracking-widest text-[11px]">Institutional Deep Dive</p>
+                    <div class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">Asset Analysis</div>
+                    <h3 id="modal-name" class="text-2xl font-black text-white tracking-tight">NVIDIA Corp.</h3>
                 </div>
-                <button onclick="closeModal()" class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-all text-white">
+                <button onclick="closeModal()" class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white hover:bg-white/10 transition-all">
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
-            <div class="flex-1 rounded-3xl overflow-hidden border border-white/10 bg-black">
-                <div id="tv-widget" class="w-full h-full"></div>
+            <div class="flex-1 flex">
+                <div class="flex-1 border-r border-white/5 bg-black/20" id="tv-widget"></div>
+                <div class="w-80 p-10">
+                    <div class="mb-10">
+                        <div class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-4">Signal Intel</div>
+                        <div class="p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 mb-4">
+                            <div class="text-[10px] text-emerald-500 font-black uppercase mb-1">Recommendation</div>
+                            <div class="text-2xl font-black text-emerald-400 uppercase italic">Strong Buy</div>
+                        </div>
+                        <div class="p-6 rounded-2xl bg-white/5 border border-white/5">
+                            <div class="text-[10px] text-neutral-400 font-black uppercase mb-1">Confidence Score</div>
+                            <div class="text-2xl font-black text-white italic">92.4%</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-4">Market Metrics</div>
+                        <div class="space-y-4">
+                            <div class="flex justify-between text-xs font-bold"><span class="text-neutral-500">Volatility</span><span class="text-white">Medium</span></div>
+                            <div class="flex justify-between text-xs font-bold"><span class="text-neutral-500">Liquidity</span><span class="text-white">Exceptional</span></div>
+                            <div class="flex justify-between text-xs font-bold"><span class="text-neutral-500">Trend Strength</span><span class="text-white">0.84</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="px-10 py-6 bg-white/[0.02] border-t border-white/10 flex justify-between items-center">
+                <div class="text-[10px] font-bold text-neutral-600 uppercase tracking-widest italic">Institutional Deep Dive - Quantum Engines v2.4</div>
+                <button class="px-8 py-3 rounded-xl bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest hover:bg-blue-500 transition-all">Execute Trade Order</button>
             </div>
         </div>
     </div>
@@ -215,8 +243,36 @@
             { symbol: 'NVDA', name: 'NVIDIA Corp.', isin: 'US67066G1040', market: 'US' },
             { symbol: 'MSFT', name: 'Microsoft Corp.', isin: 'US5949181045', market: 'US' },
             { symbol: 'TSLA', name: 'Tesla, Inc.', isin: 'US88160R1014', market: 'US' },
-            { symbol: 'ENI.MI', name: 'Eni S.p.A.', isin: 'IT0003132476', market: 'IT' },
-            { symbol: 'SAP.DE', name: 'SAP SE', isin: 'DE0007164600', market: 'DE' }
+            { symbol: 'META', name: 'Meta Platforms', isin: 'US30303M1027', market: 'US' },
+            { symbol: 'GOOGL', name: 'Alphabet Inc.', isin: 'US02079K3051', market: 'US' },
+            { symbol: 'AMZN', name: 'Amazon.com, Inc.', isin: 'US0231351067', market: 'US' },
+            { symbol: 'NFLX', name: 'Netflix, Inc.', isin: 'US64110L1061', market: 'US' },
+            { symbol: 'AMD', name: 'Advanced Micro Devices', isin: 'US0079031078', market: 'US' },
+            { symbol: 'AVGO', name: 'Broadcom Inc.', isin: 'US11135F1012', market: 'US' },
+            { symbol: 'PEP', name: 'PepsiCo, Inc.', isin: 'US7134481081', market: 'US' },
+            { symbol: 'COST', name: 'Costco Wholesale', isin: 'US22160K1051', market: 'US' },
+            { symbol: 'ADBE', name: 'Adobe Inc.', isin: 'US00724F1012', market: 'US' },
+            { symbol: 'CRM', name: 'Salesforce, Inc.', isin: 'US79466L3024', market: 'US' },
+            { symbol: 'QCOM', name: 'Qualcomm Inc.', isin: 'US7475251036', market: 'US' },
+            { symbol: 'TXN', name: 'Texas Instruments', isin: 'US8825081040', market: 'US' },
+            { symbol: 'AMAT', name: 'Applied Materials', isin: 'US0382221051', market: 'US' },
+            { symbol: 'INTC', name: 'Intel Corporation', isin: 'US4581401001', market: 'US' },
+            { symbol: 'SBUX', name: 'Starbucks Corp.', isin: 'US8552441094', market: 'US' },
+            { symbol: 'V', name: 'Visa Inc.', isin: 'US92826C8394', market: 'US' },
+            { symbol: 'MA', name: 'Mastercard Inc.', isin: 'US57636Q1040', market: 'US' },
+            { symbol: 'PYPL', name: 'PayPal Holdings', isin: 'US70450Y1038', market: 'US' },
+            { symbol: 'SQ', name: 'Block, Inc.', isin: 'US8522341036', market: 'US' },
+            { symbol: 'BABA', name: 'Alibaba Group', isin: 'US01609W1027', market: 'US' },
+            { symbol: 'JD', name: 'JD.com, Inc.', isin: 'US47215P1066', market: 'US' },
+            { symbol: 'NIO', name: 'NIO Inc.', isin: 'US62914V1061', market: 'US' },
+            { symbol: 'PDD', name: 'PDD Holdings', isin: 'US7223041028', market: 'US' },
+            { symbol: 'COIN', name: 'Coinbase Global', isin: 'US19260Q1076', market: 'US' },
+            { symbol: 'MSTR', name: 'MicroStrategy', isin: 'US5949724083', market: 'US' },
+            { symbol: 'MARA', name: 'Marathon Digital', isin: 'US56608R1086', market: 'US' },
+            { symbol: 'RIOT', name: 'Riot Platforms', isin: 'US7672921050', market: 'US' },
+            { symbol: 'CLSK', name: 'CleanSpark, Inc.', isin: 'US18452B1044', market: 'US' },
+            { symbol: 'BITF', name: 'Bitfarms Ltd.', isin: 'CA09173L1027', market: 'US' },
+            { symbol: 'HIVE', name: 'HIVE Digital', isin: 'CA43366H1001', market: 'US' }
         ];
 
         let signalsData = {};
@@ -235,13 +291,7 @@
                 if (change < -0.5) sig = 'BUY';
                 if (change > 0.5) sig = 'SELL';
                 
-                signalsData[s] = {
-                    sig,
-                    score,
-                    price: `$${p.toLocaleString(undefined, {minimumFractionDigits: 2})}`,
-                    change
-                };
-                
+                signalsData[s] = { sig, score, price: `$${p.toLocaleString(undefined, {minimumFractionDigits: 2})}`, change };
                 updateStats();
                 render();
             } catch(e) {
@@ -257,8 +307,9 @@
             DB.forEach(a => {
                 const data = signalsData[a.symbol] || { sig: 'NEUTRAL', score: 50, price: '---', change: 0 };
                 const color = data.change >= 0 ? 'text-emerald-400' : 'text-rose-400';
+                const arrow = data.change >= 0 ? '▲' : '▼';
                 const badgeCls = data.sig === 'BUY' ? 'badge-buy' : (data.sig === 'SELL' ? 'badge-sell' : 'badge-neutral');
-                
+
                 const tr = document.createElement('tr');
                 tr.className = 'group cursor-pointer hover:bg-white/[0.04] transition-all border-b border-white/[0.02] last:border-0';
                 tr.onclick = () => openAnalysis(a);
@@ -279,7 +330,7 @@
                     <td class="px-10 py-7 text-right">
                         <div class="text-white text-lg font-black">${data.price}</div>
                         <div class="text-[11px] ${color} font-black">
-                            ${data.change >= 0 ? '▲' : '▼'} ${Math.abs(data.change).toFixed(2)}%
+                            ${arrow} ${Math.abs(data.change).toFixed(2)}%
                         </div>
                     </td>
                     <td class="px-10 py-7 text-center">
@@ -293,13 +344,28 @@
                 `;
                 body.appendChild(tr);
             });
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
         }
 
         function updateStats() {
             const buys = Object.values(signalsData).filter(x => x.sig === 'BUY').length;
-            const el = document.getElementById('stat-buy');
-            if (el) el.innerText = buys || '--';
+            const buyEl = document.getElementById('stat-buy');
+            if (buyEl) buyEl.innerText = buys || '--';
+
+            const assetsEl = document.getElementById('stat-assets');
+            if (assetsEl) assetsEl.innerText = DB.length;
+
+            const volEl = document.getElementById('stat-vol');
+            if (volEl && Object.keys(signalsData).length > 0) {
+                const scores = Object.values(signalsData).map(x => x.score);
+                const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+                volEl.innerText = avgScore.toFixed(1);
+            }
+        }
+
+        function updateClock() {
+            const el = document.getElementById('live-clock');
+            if (el && window.dayjs) el.innerText = dayjs().format('HH:mm:ss');
         }
 
         function openAnalysis(a) {
@@ -307,19 +373,21 @@
             document.getElementById('modal-name').innerText = a.name;
             const sym = a.market === 'IT' ? 'MIL:' + a.symbol.split('.')[0] : (a.market === 'DE' ? 'XETR:' + a.symbol.split('.')[0] : a.symbol);
             
-            new TradingView.widget({
-                "autosize": true,
-                "symbol": sym,
-                "interval": "D",
-                "timezone": "Etc/UTC",
-                "theme": "dark",
-                "style": "1",
-                "locale": "en",
-                "container_id": "tv-widget",
-                "hide_top_toolbar": true,
-                "hide_legend": true,
-                "save_image": false
-            });
+            if (window.TradingView) {
+                new TradingView.widget({
+                    "autosize": true,
+                    "symbol": sym,
+                    "interval": "D",
+                    "timezone": "Etc/UTC",
+                    "theme": "dark",
+                    "style": "1",
+                    "locale": "en",
+                    "container_id": "tv-widget",
+                    "hide_top_toolbar": true,
+                    "hide_legend": true,
+                    "save_image": false
+                });
+            }
         }
 
         function closeModal() {
@@ -327,10 +395,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            setInterval(() => {
-                const el = document.getElementById('live-clock');
-                if (el) el.innerText = dayjs().format('HH:mm:ss');
-            }, 1000);
+            updateClock();
+            setInterval(updateClock, 1000);
             render();
             DB.forEach(a => fetchLive(a.symbol));
         });
