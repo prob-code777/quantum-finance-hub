@@ -365,7 +365,7 @@
             const volEl = document.getElementById('stat-vol');
             const volBar = document.getElementById('vol-bar');
             if (volEl && Object.keys(signalsData).length > 0) {
-                const scores = Object.values(signalsData).map(x => x.score);
+                            const scores = Object.values(signalsData).map(x => x.score).filter(s => isFinite(s));
                 const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
                 volEl.innerText = avgScore.toFixed(1);
                 if (volBar) volBar.style.width = `${Math.min(100, Math.max(0, avgScore))}%`;
