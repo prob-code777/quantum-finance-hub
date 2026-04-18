@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.10/dayjs.min.js"></script>
+    <script src="https://s3.tradingview.com/tv.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         :root {
@@ -25,26 +26,34 @@
             color: #F5F5F7;
             font-family: 'Inter', -apple-system, sans-serif;
             min-height: 100vh;
+            overflow-x: hidden;
         }
         .liquid-glass {
             background: var(--glass);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            border-radius: 24px;
         }
-        .nav-item {
-            padding: 10px 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 13px;
-            font-weight: 600;
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
             color: #86868b;
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
-        .nav-item.active {
+        .sidebar-item:hover, .sidebar-item.active {
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
+        }
+        .stat-card {
+            padding: 24px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
         }
         .quantum-badge {
             padding: 4px 12px;
@@ -57,160 +66,160 @@
         .badge-buy { background: rgba(50, 215, 75, 0.15); color: #32D74B; border: 1px solid rgba(50, 215, 75, 0.2); }
         .badge-sell { background: rgba(255, 69, 58, 0.15); color: #FF453A; border: 1px solid rgba(255, 69, 58, 0.2); }
         .badge-neutral { background: rgba(255, 255, 255, 0.05); color: #86868b; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .search-input {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 14px;
-            padding: 10px 16px;
-            color: #fff;
-            outline: none;
-            width: 300px;
-        }
-        .glass-overlay {
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        
+        .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            z-index: 100;
             display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 50;
-            padding: 20px;
-        }
-        .progress-bar {
-            height: 4px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-top: 12px;
-        }
-        .progress-fill {
-            height: 100%;
-            background: var(--accent-blue);
-            width: 64.2%;
+            padding: 40px;
         }
     </style>
 </head>
-<body class="p-6">
-    <div class="max-w-[1600px] mx-auto space-y-8">
-        <header class="flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-                    <i data-lucide="activity" class="text-white w-6 h-6"></i>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-black tracking-tight text-white uppercase">QUANTUM<span class="opacity-40">HUB</span></h1>
-                    <p class="text-[9px] text-neutral-500 font-bold uppercase tracking-[0.2em]">Institutional Quantitative Screener</p>
-                </div>
+<body class="flex">
+    <!-- Sidebar -->
+    <aside class="w-20 fixed left-0 top-0 h-screen flex flex-col items-center py-8 border-r border-white/5 bg-black/20 backdrop-blur-xl z-50">
+        <div class="mb-10 text-blue-500">
+            <i data-lucide="zap" class="w-8 h-8 fill-current"></i>
+        </div>
+        <nav class="flex flex-col gap-4">
+            <div class="sidebar-item active"><i data-lucide="layout-dashboard" class="w-5 h-5"></i></div>
+            <div class="sidebar-item"><i data-lucide="bar-chart-3" class="w-5 h-5"></i></div>
+            <div class="sidebar-item"><i data-lucide="pie-chart" class="w-5 h-5"></i></div>
+            <div class="sidebar-item"><i data-lucide="wallet" class="w-5 h-5"></i></div>
+            <div class="sidebar-item"><i data-lucide="bell" class="w-5 h-5"></i></div>
+        </nav>
+        <div class="mt-auto">
+            <div class="sidebar-item"><i data-lucide="settings" class="w-5 h-5"></i></div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 ml-20 p-8">
+        <!-- Header -->
+        <header class="flex items-center justify-between mb-10">
+            <div>
+                <h1 class="text-2xl font-black tracking-tight flex items-center gap-2">
+                    QUANTUM HUB <span class="text-neutral-500 font-medium">| Premium Terminal</span>
+                </h1>
+                <p class="text-xs text-neutral-500 font-semibold uppercase tracking-widest mt-1">Institutional Quantitative Screener</p>
             </div>
             <div class="flex items-center gap-6">
                 <div class="text-right">
-                    <div class="text-lg font-black text-white" id="live-clock">00:00:00</div>
-                    <div class="flex items-center justify-end gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                        <p class="text-[9px] text-green-500 font-bold uppercase tracking-widest">System Online</p>
-                    </div>
+                    <div id="live-clock" class="text-lg font-mono font-bold">00:00:00</div>
+                    <div class="text-[10px] text-green-400 font-bold uppercase tracking-wider">● System Online</div>
                 </div>
-                <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
-                    <i data-lucide="user" class="text-neutral-400 w-5 h-5"></i>
+                <div class="h-10 w-10 rounded-full bg-gradient-to-tr from-blue-600 to-emerald-500 p-[1px]">
+                    <div class="h-full w-full rounded-full bg-black flex items-center justify-center overflow-hidden">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User">
+                    </div>
                 </div>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="liquid-glass p-6 relative overflow-hidden group cursor-pointer" onclick="filterSignals('BUY')">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <p class="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-1">Buy Signals</p>
-                        <div class="text-4xl font-black text-green-400" id="stat-buy">18</div>
-                    </div>
-                    <i data-lucide="trending-up" class="text-neutral-700 w-8 h-8"></i>
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-4 gap-6 mb-10">
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Buy Signals</span>
+                    <i data-lucide="trending-up" class="w-4 h-4 text-emerald-500"></i>
                 </div>
-                <p class="text-[10px] text-neutral-500 font-medium">Momentum strategy active</p>
+                <div id="stat-buy" class="text-3xl font-black">--</div>
+                <div class="text-[10px] text-emerald-400 mt-2 font-bold">Momentum strategy active</div>
             </div>
-            <div class="liquid-glass p-6 relative overflow-hidden group cursor-pointer" onclick="filterSignals('SELL')">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <p class="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-1">Alerts</p>
-                        <div class="text-4xl font-black text-red-400" id="stat-sell">12</div>
-                    </div>
-                    <i data-lucide="trending-down" class="text-neutral-700 w-8 h-8"></i>
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Alerts</span>
+                    <i data-lucide="bell" class="w-4 h-4 text-amber-500"></i>
                 </div>
-                <p class="text-[10px] text-neutral-500 font-medium">Overbought zones detected</p>
+                <div id="stat-alerts" class="text-3xl font-black">12</div>
+                <div class="text-[10px] text-amber-400 mt-2 font-bold">Overbought zones detected</div>
             </div>
-            <div class="liquid-glass p-6">
-                <p class="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-1">Vol Score</p>
-                <div class="text-4xl font-black text-white" id="stat-vol">64.2</div>
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Vol Score</span>
+                    <i data-lucide="activity" class="w-4 h-4 text-blue-500"></i>
+                </div>
+                <div class="text-3xl font-black">64.2</div>
+                <div class="h-1 w-full bg-white/5 rounded-full mt-4 overflow-hidden">
+                    <div class="h-full bg-blue-500 w-[64.2%]"></div>
                 </div>
             </div>
-            <div class="liquid-glass p-6">
-                <p class="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-1">DB Assets</p>
-                <div class="text-4xl font-black text-white" id="stat-assets">34</div>
-                <p class="text-[10px] text-neutral-500 font-medium mt-3">IT / US / DE Markets Unified</p>
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">DB Assets</span>
+                    <i data-lucide="database" class="w-4 h-4 text-neutral-400"></i>
+                </div>
+                <div class="text-3xl font-black">34</div>
+                <div class="text-[10px] text-neutral-500 mt-2 font-bold uppercase">IT / US / DE Markets Unified</div>
             </div>
         </div>
 
-        <main class="liquid-glass overflow-hidden">
-            <div class="p-6 border-b border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-3">
-                    <i data-lucide="layout-grid" class="text-blue-500 w-5 h-5"></i>
-                    <h2 class="text-xl font-bold">Market Intelligence</h2>
+        <!-- Main Section -->
+        <section class="liquid-glass rounded-[32px] overflow-hidden">
+            <div class="p-8 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
+                <div class="flex items-center gap-6">
+                    <h2 class="font-bold flex items-center gap-2">
+                        <i data-lucide="layers" class="w-4 h-4 text-blue-500"></i>
+                        Market Intelligence
+                    </h2>
+                    <div class="relative">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500"></i>
+                        <input type="text" placeholder="Search Symbol/ISIN..." class="bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-2 text-sm text-neutral-300 outline-none w-64 focus:border-blue-500/50 transition-all">
+                    </div>
                 </div>
-                <div class="flex gap-4">
-                    <input type="text" id="asset-search" placeholder="Search Symbol/ISIN..." class="search-input text-sm">
-                    <select id="market-filter" class="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-neutral-300 outline-none">
-                        <option value="ALL">All Markets</option>
-                        <option value="IT">Italy (FTSE MIB)</option>
-                        <option value="US">USA (Nasdaq/NYSE)</option>
-                        <option value="DE">Germany (DAX)</option>
+                <div class="flex items-center gap-2">
+                    <select class="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-neutral-300 outline-none">
+                        <option>All Markets</option>
+                        <option>USA (Nasdaq/NYSE)</option>
+                        <option>Italy (FTSE MIB)</option>
+                        <option>Germany (DAX)</option>
                     </select>
                 </div>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="text-[10px] uppercase font-black text-neutral-500 border-b border-white/5">
-                        <tr>
-                            <th class="px-8 py-4">Asset Details</th>
-                            <th class="px-8 py-4">ISIN</th>
-                            <th class="px-8 py-4 text-right">Market Price</th>
-                            <th class="px-8 py-4 text-center">Quantum Signal</th>
-                            <th class="px-8 py-4 text-right">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="asset-table-body" class="divide-y divide-white/[0.03]"></tbody>
-                </table>
-            </div>
-        </main>
-    </div>
 
-    <div id="analysis-modal" class="glass-overlay">
-        <div class="liquid-glass w-full max-w-5xl h-[90vh] flex flex-col overflow-hidden">
-            <div class="p-6 border-b border-white/10 flex justify-between items-center">
-                <h2 id="modal-name" class="text-2xl font-black uppercase">--</h2>
-                <button onclick="closeModal()" class="text-neutral-500 hover:text-white transition-all"><i data-lucide="x"></i></button>
-            </div>
-            <div class="flex-grow flex flex-col lg:flex-row overflow-hidden">
-                <div class="flex-grow p-4 bg-black/20" id="tv-widget"></div>
-                <div class="w-full lg:w-[350px] p-6 flex flex-col border-l border-white/5">
-                    <div class="flex-grow space-y-6">
-                        <div class="p-4 rounded-xl bg-white/[0.03] border border-white/5">
-                            <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-3">RSI (14)</p>
-                            <div class="text-2xl font-black text-green-400" id="rsi-val">30.0</div>
-                        </div>
-                        <div class="p-4 rounded-xl bg-white/[0.03] border border-white/5">
-                            <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-3">Momentum</p>
-                            <div class="text-2xl font-black text-blue-400" id="mom-val">7.95</div>
-                        </div>
+            <table class="w-full">
+                <thead>
+                    <tr class="text-[10px] text-neutral-500 font-bold uppercase tracking-widest border-b border-white/5">
+                        <th class="px-8 py-5 text-left">Asset Details</th>
+                        <th class="px-8 py-5 text-left">ISIN</th>
+                        <th class="px-8 py-5 text-right">Market Price</th>
+                        <th class="px-8 py-5 text-center">Quantum Signal</th>
+                        <th class="px-8 py-5 text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="asset-table-body">
+                    <!-- Dynamic Content -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- Modal Analysis -->
+    <div id="analysis-modal" class="modal-overlay">
+        <div class="h-full w-full flex flex-col gap-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 id="modal-name" class="text-3xl font-black">Asset Analysis</h3>
+                    <div class="flex items-center gap-2 mt-2">
+                        <span class="quantum-badge badge-buy">Strong Buy</span>
+                        <span class="text-xs text-neutral-500 font-bold">RSI(14): 32.4</span>
                     </div>
-                    <button class="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl transition-all uppercase tracking-widest mt-6">Execute Trade</button>
                 </div>
+                <button onclick="closeModal()" class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-all">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
             </div>
+            <div class="flex-1 rounded-3xl overflow-hidden border border-white/10" id="tv-widget"></div>
         </div>
     </div>
 
-    <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
         const DB = [
             { symbol: 'AAPL', name: 'Apple Inc.', isin: 'US0378331005', market: 'US', country: 'us' },
@@ -218,86 +227,64 @@
             { symbol: 'MSFT', name: 'Microsoft Corp.', isin: 'US5949181045', market: 'US', country: 'us' },
             { symbol: 'TSLA', name: 'Tesla, Inc.', isin: 'US88160R1014', market: 'US', country: 'us' },
             { symbol: 'ENI.MI', name: 'Eni S.p.A.', isin: 'IT0003132476', market: 'IT', country: 'it' },
-            { symbol: 'ISP.MI', name: 'Intesa Sanpaolo', isin: 'IT0000072618', market: 'IT', country: 'it' },
-            { symbol: 'UCG.MI', name: 'UniCredit S.p.A.', isin: 'IT0005239360', market: 'IT', country: 'it' },
-            { symbol: 'SAP.DE', name: 'SAP SE', isin: 'DE0007164600', market: 'DE', country: 'de' },
-            { symbol: 'AMZN', name: 'Amazon.com', isin: 'US0231351067', market: 'US', country: 'us' },
-            { symbol: 'META', name: 'Meta Platforms', isin: 'US30303M1027', market: 'US', country: 'us' },
-            { symbol: 'GOOGL', name: 'Alphabet Inc.', isin: 'US02079K3051', market: 'US', country: 'us' },
-            { symbol: 'NFLX', name: 'Netflix Inc.', isin: 'US64110L1061', market: 'US', country: 'us' },
-            { symbol: 'ENEL.MI', name: 'Enel S.p.A.', isin: 'IT0003128367', market: 'IT', country: 'it' },
-            { symbol: 'G.MI', name: 'Assicurazioni Generali', isin: 'IT0000062014', market: 'IT', country: 'it' },
-            { symbol: 'STLAM.MI', name: 'Stellantis N.V.', isin: 'NL00150001Q9', market: 'IT', country: 'it' },
-            { symbol: 'FER.MI', name: 'Ferrari N.V.', isin: 'NL0011585146', market: 'IT', country: 'it' },
-            { symbol: 'LDO.MI', name: 'Leonardo S.p.A.', isin: 'IT0003856405', market: 'IT', country: 'it' },
-            { symbol: 'PRY.MI', name: 'Prysmian S.p.A.', isin: 'IT0004176001', market: 'IT', country: 'it' },
-            { symbol: 'PST.MI', name: 'Poste Italiane', isin: 'IT0003796171', market: 'IT', country: 'it' },
-            { symbol: 'SRG.MI', name: 'Snam S.p.A.', isin: 'IT0003153415', market: 'IT', country: 'it' },
-            { symbol: 'TRN.MI', name: 'Terna S.p.A.', isin: 'IT0003242622', market: 'IT', country: 'it' },
-            { symbol: 'BTC-USD', name: 'Bitcoin', isin: 'BTC-CRYPTO', market: 'CRYPTO', country: 'us' },
-            { symbol: 'ETH-USD', name: 'Ethereum', isin: 'ETH-CRYPTO', market: 'CRYPTO', country: 'us' },
-            { symbol: 'SPY', name: 'S&P 500 ETF', isin: 'US78462F1030', market: 'US', country: 'us' },
-            { symbol: 'QQQ', name: 'Invesco QQQ', isin: 'US46090E1038', market: 'US', country: 'us' },
-            { symbol: 'DAI.DE', name: 'Mercedes-Benz', isin: 'DE0007100000', market: 'DE', country: 'de' },
-            { symbol: 'ASML.AS', name: 'ASML Holding', isin: 'NL0010273215', market: 'DE', country: 'nl' },
-            { symbol: 'MC.PA', name: 'LVMH', isin: 'FR0000121014', market: 'DE', country: 'fr' },
-            { symbol: 'ADBE', name: 'Adobe Inc.', isin: 'US00724F1012', market: 'US', country: 'us' },
-            { symbol: 'AMD', name: 'AMD', isin: 'US0079031078', market: 'US', country: 'us' },
-            { symbol: 'CRM', name: 'Salesforce', isin: 'US79466L3024', market: 'US', country: 'us' },
-            { symbol: 'V', name: 'Visa Inc.', isin: 'US92826C8394', market: 'US', country: 'us' },
-            { symbol: 'PYPL', name: 'PayPal', isin: 'US70450Y1038', market: 'US', country: 'us' },
-            { symbol: 'T.MI', name: 'Telecom Italia', isin: 'IT0003497168', market: 'IT', country: 'it' }
+            { symbol: 'SAP.DE', name: 'SAP SE', isin: 'DE0007164600', market: 'DE', country: 'de' }
         ];
 
         let signalsData = {};
+
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             setInterval(() => {
-                document.getElementById('live-clock').innerText = dayjs().format('HH:mm:ss');
+                const el = document.getElementById('live-clock');
+                if (el) el.innerText = dayjs().format('HH:mm:ss');
             }, 1000);
             render();
         });
 
         async function render() {
             const body = document.getElementById('asset-table-body');
+            if (!body) return;
             body.innerHTML = '';
+            
             DB.forEach(a => {
                 const data = signalsData[a.symbol] || { sig: 'NEUTRAL', score: 50, price: '---', change: 0 };
                 const tr = document.createElement('tr');
-                tr.className = 'group cursor-pointer hover:bg-white/[0.04] transition-all';
+                tr.className = 'group cursor-pointer hover:bg-white/[0.04] transition-all border-b border-white/[0.02] last:border-0';
                 tr.onclick = () => openAnalysis(a);
                 
-                const color = data.change >= 0 ? 'text-green-400' : 'text-red-400';
+                const color = data.change >= 0 ? 'text-emerald-400' : 'text-rose-400';
                 const arrow = data.change >= 0 ? '▲' : '▼';
                 const badgeCls = data.sig === 'BUY' ? 'badge-buy' : (data.sig === 'SELL' ? 'badge-sell' : 'badge-neutral');
-
+                
                 tr.innerHTML = `
                     <td class="px-8 py-5">
-                        <div class="flex items-center gap-3">
-                            <img src="https://flagcdn.com/w20/${a.country}.png" class="w-5 h-3.5 rounded-sm opacity-80">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center font-black text-blue-500 text-xs">\${a.symbol[0]}</div>
                             <div>
-                                <div class="font-black text-white">${a.symbol}</div>
-                                <div class="text-[10px] text-neutral-500 font-medium uppercase tracking-wider">${a.name}</div>
+                                <div class="font-black text-white text-sm">\${a.symbol}</div>
+                                <div class="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">\${a.name}</div>
                             </div>
                         </div>
                     </td>
-                    <td class="px-8 py-5 text-xs text-neutral-500 font-mono">${a.isin}</td>
+                    <td class="px-8 py-5 text-xs text-neutral-500 font-mono">\${a.isin}</td>
                     <td class="px-8 py-5 text-right font-black">
-                        <div class="text-white">${data.price}</div>
-                        <div class="text-[10px] ${color} font-bold">${arrow} ${Math.abs(data.change).toFixed(2)}%</div>
+                        <div class="text-white text-sm">\${data.price}</div>
+                        <div class="text-[10px] \${color} font-bold">\${arrow} \${Math.abs(data.change).toFixed(2)}%</div>
                     </td>
                     <td class="px-8 py-5 text-center">
                         <div class="flex items-center justify-center gap-3">
-                            <span class="quantum-badge ${badgeCls}">${data.sig}</span>
-                            <span class="text-[10px] text-neutral-500 font-bold">Score: ${data.score.toFixed(1)}</span>
+                            <span class="quantum-badge \${badgeCls}">\${data.sig}</span>
+                            <span class="text-[10px] text-neutral-500 font-bold">Score: \${data.score.toFixed(1)}</span>
                         </div>
                     </td>
                     <td class="px-8 py-5 text-right">
-                        <i data-lucide="chevron-right" class="text-blue-500 ml-auto w-5 h-5"></i>
+                        <button class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500 ml-auto group-hover:bg-blue-500 group-hover:text-white transition-all">
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
                     </td>
                 `;
                 body.appendChild(tr);
-                fetchLive(a.symbol);
+                if (data.price === '---') fetchLive(a.symbol);
             });
             lucide.createIcons();
         }
@@ -310,26 +297,26 @@
                 const p = res.regularMarketPrice;
                 const pc = res.previousClose;
                 const change = ((p - pc) / pc) * 100;
+                
                 let sig = 'NEUTRAL';
-                let score = 50 + (change * 5);
-                if (change < -1.5) sig = 'BUY';
-                if (change > 1.5) sig = 'SELL';
-                signalsData[s] = { sig, score, price: \`$\${p.toLocaleString()}\`, change };
+                let score = 50 + (change * 10);
+                if (change < -0.5) sig = 'BUY';
+                if (change > 0.5) sig = 'SELL';
+                
+                signalsData[s] = { sig, score, price: \`$\${p.toLocaleString(undefined, {minimumFractionDigits: 2})}\`, change };
                 updateStats();
+                render(); 
             } catch(e) {}
         }
 
         function updateStats() {
             const buys = Object.values(signalsData).filter(x => x.sig === 'BUY').length;
-            const sells = Object.values(signalsData).filter(x => x.sig === 'SELL').length;
-            const bEl = document.getElementById('stat-buy');
-            const sEl = document.getElementById('stat-sell');
-            if (bEl) bEl.innerText = buys;
-            if (sEl) sEl.innerText = sells;
+            const el = document.getElementById('stat-buy');
+            if (el) el.innerText = buys;
         }
 
         function openAnalysis(a) {
-            document.getElementById('analysis-modal').style.display = 'flex';
+            document.getElementById('analysis-modal').style.display = 'block';
             document.getElementById('modal-name').innerText = a.name;
             new TradingView.widget({
                 "autosize": true,
@@ -341,7 +328,10 @@
                 "hide_top_toolbar": true
             });
         }
-        function closeModal() { document.getElementById('analysis-modal').style.display = 'none'; }
+
+        function closeModal() {
+            document.getElementById('analysis-modal').style.display = 'none';
+        }
     </script>
 </body>
 </html>
